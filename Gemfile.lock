@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/pgericson/jquery-rails.git
-  revision: 1a2c7b3761c8d0e8b42f6735708af52f96a2c517
+  revision: 1a2c7b3
   specs:
     jquery-rails (0.2.6)
       rails (~> 3.0)
