@@ -1,0 +1,8 @@
+<% unless @comment.errors.any? %>
+  $('#comments').append( '<%= escape_javascript(
+    render @comment
+  ) %>' );
+  $('#new-comment-form-container').replaceWith( '<%= new_comment_link %>' );
+<% else %>
+  $('#new_comment').find('#error_explanation').html( '<%= @comment.errors.full_error_messages %>' );
+<% end %>

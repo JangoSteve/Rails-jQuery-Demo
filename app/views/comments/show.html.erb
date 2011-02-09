@@ -1,15 +1,14 @@
-<p id="notice"><%= notice %></p>
+<table>
+  <tr>
+    <th>Subject</th>
+    <th>Body</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+  <%= render @comment %>
+</table>
 
-<p>
-  <b>Subject:</b>
-  <%= @comment.subject %>
-</p>
+<br />
 
-<p>
-  <b>Body:</b>
-  <%= @comment.body %>
-</p>
-
-
-<%= link_to 'Edit', edit_comment_path(@comment) %> |
 <%= link_to 'Back', comments_path %>
