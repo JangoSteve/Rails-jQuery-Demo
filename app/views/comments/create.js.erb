@@ -2,7 +2,9 @@
   $('#comments').append( '<%= escape_javascript(
     render @comment
   ) %>' );
-  $('#new-comment-form-container').replaceWith( '<%= new_comment_link %>' );
+  $('#new-comment-form-container').replaceWith( '<%= escape_javascript(
+    render 'new_comment_links'
+  ) %>' );
 <% else %>
   $('#new_comment').find('#error_explanation').html( '<%= @comment.errors.full_error_messages %>' );
 <% end %>
