@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/JangoSteve/remotipart.git
+  revision: ab11434
+  branch: latest-and-greatest
+  specs:
+    remotipart (0.2.1)
+
+GIT
   remote: git://github.com/pgericson/jquery-rails.git
   revision: 1a2c7b3
   specs:
@@ -83,4 +90,5 @@ DEPENDENCIES
   jquery-rails!
   paperclip
   rails (= 3.0.4)
+  remotipart!
   sqlite3

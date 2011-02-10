@@ -7,8 +7,9 @@ gem 'rails', '3.0.4'
 
 gem 'sqlite3'
 
-gem 'jquery-rails', :git => 'git://github.com/pgericson/jquery-rails.git'
 gem 'paperclip'
+gem 'jquery-rails', :git => 'git://github.com/pgericson/jquery-rails.git'
+gem 'remotipart', :git => 'git://github.com/JangoSteve/remotipart.git', :branch => 'latest-and-greatest'
 
 # Use unicorn as the web server
 # gem 'unicorn'
