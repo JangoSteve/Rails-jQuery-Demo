@@ -136,8 +136,7 @@
 			return !remote;
 		}
 		if (nonBlankInputs(form, 'input:file')) {
-			form.trigger('ajax:aborted:file');
-			return !remote;
+      return fire(form, 'ajax:aborted:file');
 		}
 
 		if (remote) {
