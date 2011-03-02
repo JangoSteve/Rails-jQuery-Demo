@@ -7,24 +7,12 @@
 
 (function($) {
 	// Make sure that every Ajax request sends the CSRF token
-	function CSRFProtection(fn) {
+	function CSRFProtection(xhr) {
 		var token = $('meta[name="csrf-token"]').attr('content');
-		if (token) fn(function(xhr) { xhr.setRequestHeader('X-CSRF-Token', token) });
+		if (token) xhr.setRequestHeader('X-CSRF-Token', token);
 	}
-	if ($().jquery == '1.5') { // gruesome hack
-		var factory = $.ajaxSettings.xhr;
-		$.ajaxSettings.xhr = function() {
-			var xhr = factory();
-			CSRFProtection(function(setHeader) {
-				var open = xhr.open;
-				xhr.open = function() { open.apply(this, arguments); setHeader(this) };
-			});
-			return xhr;
-		};
-	}
-	else $(document).ajaxSend(function(e, xhr) {
-		CSRFProtection(function(setHeader) { setHeader(xhr) });
-	});
+	if ('ajaxPrefilter' in $) $.ajaxPrefilter(function(options, originalOptions, xhr){ CSRFProtection(xhr) });
+	else $(document).ajaxSend(function(e, xhr){ CSRFProtection(xhr) });
 
 	// Triggers an event on an element and returns the event result
 	function fire(obj, name, data) {
@@ -146,7 +134,8 @@
 			handleRemote(form);
 			return false;
 		} else {
-			disableFormElements(form);
+			// slight timeout so that the submit button gets properly serialized
+			setTimeout(function(){ disableFormElements(form) }, 13);
 		}
 	});
 

@@ -8,7 +8,8 @@ gem 'rails', '3.0.5'
 gem 'sqlite3'
 
 gem 'paperclip'
-gem 'jquery-rails'
+#gem 'jquery-rails'
+gem 'jquery-rails', :git => 'git://github.com/pgericson/jquery-rails.git'
 
 # Use unicorn as the web server
 # gem 'unicorn'

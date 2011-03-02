@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/pgericson/jquery-rails.git
+  revision: 1a2c7b3
+  specs:
+    jquery-rails (0.2.6)
+      rails (~> 3.0)
+      thor (~> 0.14.4)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -34,9 +42,6 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     i18n (0.5.0)
-    jquery-rails (0.2.7)
-      rails (~> 3.0)
-      thor (~> 0.14.4)
     mail (2.2.15)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
@@ -89,7 +94,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  jquery-rails
+  jquery-rails!
   paperclip
   rails (= 3.0.5)
   rspec-rails
