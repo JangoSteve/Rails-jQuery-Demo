@@ -1,4 +1,4 @@
-jQuery(function ($) {
+(function ($) {
 	// Triggers an event on an element and returns the event result
 	function fire(obj, name, data) {
 		var event = new $.Event(name);
@@ -76,4 +76,4 @@ jQuery(function ($) {
       disableFormElements(form);
     }
   });
-});
+})(jQuery);
