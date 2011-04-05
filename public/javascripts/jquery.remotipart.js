@@ -67,6 +67,7 @@
 	}
 
   $('form').live('ajax:aborted:file.remotipart', function(){
+    console.log('hi');
     var form = $(this), remote = form.attr('data-remote') != undefined;
 
     if (remote) {
