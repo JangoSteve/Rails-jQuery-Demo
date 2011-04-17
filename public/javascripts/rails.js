@@ -6,13 +6,14 @@
 
  * Uploading file using rails.js
  *
- * By default, browsers do not allow files to be uploaded via AJAX. As a result, when this rails.js adapter submits remote forms,
- * any file input fields are excluded from the request parameters sent to the server. You may cancel the whole form submission by
- * binding a handler function that returns false to the `ajax:aborted:file` hook.
+ * By default, browsers do not allow files to be uploaded via AJAX. As a result, if there are any non-blank file fields
+ * in the remote form, this adapter aborts the AJAX submission and allows the browser to submit the form normally.
+ * You may intercept the form submission and implement your own work-around for submitting file uploads without refreshing the page,
+ * by binding a handler function that returns false to the `ajax:aborted:file` hook.
  *
  * Ex:
  *     $('form').live('ajax:aborted:file', function(){
- *       alert("File detected. Form submission canceled.");
+ *       // Implement own remote file-transfer handler here.
  *       return false;
  *     });
  *
@@ -20,10 +21,18 @@
  *   a) file-type input field is detected, and
  *   b) the value of the input:file field is not blank.
  *
- * Third party tools can use this hook to detect when an AJAX file upload is attempted, and then use techniques like the iframe method to upload the file instead.
+ * Third-party tools can use this hook to detect when an AJAX file upload is attempted, and then use techniques like the iframe method to upload the file instead.
  *
  * Similarly, rails.js aborts AJAX form submissions if any non-blank input[required] fields are detected, providing the `ajax:aborted:required` hook.
  * Unlike file uploads, however, blank required input fields cancel the whole form submission by default.
+ *
+ * The default behavior for aborting the remote form submission when required inputs are missing may be canceled (thereby submitting the form via AJAX anyway)
+ * by binding a handler function that returns false to the `ajax:aborted:required` hook.
+ *
+ * Ex:
+ *     $('form').live('ajax:aborted:required', function(){
+ *       return ! confirm("Would you like to submit the form with missing info?");
+ *     });
  */
 
 (function($) {
@@ -146,9 +155,24 @@
 		return nonBlankExists;
 	}
 
+  function stopEverything(e) {
+    e.stopImmediatePropagation();
+    return false;
+  }
+
+  function callFormSubmitBindings(form) {
+    var events = form.data('events'), continuePropagation = true;
+    if (events != undefined && events['submit'] != undefined) {
+      $.each(events['submit'], function(i, obj){
+        if (typeof obj.handler === 'function') return continuePropagation = obj.handler(obj.data);
+      })
+    }
+    return continuePropagation;
+  }
+
 	$('a[data-confirm], a[data-method], a[data-remote]').live('click.rails', function(e) {
 		var link = $(this);
-		if (!allowAction(link)) return false;
+		if (!allowAction(link)) return stopEverything(e);
 
 		if (link.data('remote') != undefined) {
 			handleRemote(link);
@@ -161,16 +185,19 @@
 
 	$('form').live('submit.rails', function(e) {
 		var form = $(this), remote = form.data('remote') != undefined;
-		if (!allowAction(form)) return false;
+		if (!allowAction(form)) return stopEverything(e);
 
 		// skip other logic when required values are missing or file upload is present
-		if (blankInputs(form, 'input[name][required]')) {
-			form.trigger('ajax:aborted:required');
+		if (blankInputs(form, 'input[name][required]') && fire(form, 'ajax:aborted:required')) {
 			return !remote;
 		}
 		if (nonBlankInputs(form, 'input:file')) {
 			return fire(form, 'ajax:aborted:file');
 		}
+
+    // If browser does not support submit bubbling, then this live-binding will be called before direct
+    // bindings. Therefore, we should directly call any direct bindings before remotely submitting form.
+    if (!$.support.submitBubbles && callFormSubmitBindings(form) == false) return stopEverything(e)
 
 		if (remote) {
 			handleRemote(form);
@@ -183,7 +210,7 @@
 
 	$('form input[type=submit], form input[type=image], form button[type=submit], form button:not([type])').live('click.rails', function() {
 		var button = $(this);
-		if (!allowAction(button)) return false;
+		if (!allowAction(button)) return stopEverything(e);
 		// register the pressed submit button
 		var name = button.attr('name'), data = name ? {name:name, value:button.val()} : null;
 		button.closest('form').data('ujs:submit-button', data);
