@@ -1,11 +1,7 @@
 <div id='new-comment-form-container'>
   <h1>New comment</h1>
   
-  <% unless params[:attachment] %>
-    <%= render 'form' %>
-  <% else %>
-    <%= render 'multipart_form' %>
-  <% end %>
+  <%= render 'form' %>
   
   <%= link_to 'Cancel', comments_path, :id => 'cancel-button' %>
 </div>

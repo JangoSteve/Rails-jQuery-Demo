@@ -1,6 +1,6 @@
 /*!
  * jQuery Form Plugin
- * version: 2.63 (29-JAN-2011)
+ * version: 2.72 (28-APR-2011)
  * @requires jQuery v1.3.2 or later
  *
  * Examples and documentation at: http://malsup.com/jquery/form/
@@ -64,6 +64,7 @@ $.fn.ajaxSubmit = function(options) {
 
 	options = $.extend(true, {
 		url:  url,
+		success: $.ajaxSettings.success,
 		type: this[0].getAttribute('method') || 'GET', // IE7 massage (see issue 57)
 		iframeSrc: /^https/i.test(window.location.href || '') ? 'javascript:false' : 'about:blank'
 	}, options);
@@ -204,9 +205,15 @@ $.fn.ajaxSubmit = function(options) {
 			getAllResponseHeaders: function() {},
 			getResponseHeader: function() {},
 			setRequestHeader: function() {},
-			abort: function() {
+			abort: function(status) {
+				var e = (status === 'timeout' ? 'timeout' : 'aborted');
+				log('aborting upload... ' + e);
 				this.aborted = 1;
 				$io.attr('src', s.iframeSrc); // abort op in progress
+				xhr.error = e;
+				s.error && s.error.call(s.context, xhr, e, e);
+				g && $.event.trigger("ajaxError", [xhr, s, e]);
+				s.complete && s.complete.call(s.context, xhr, e);
 			}
 		};
 
@@ -229,7 +236,7 @@ $.fn.ajaxSubmit = function(options) {
 			return;
 		}
 
-		var timedOut = 0;
+		var timedOut = 0, timeoutHandle;
 
 		// add submitting element to data if we know it
 		var sub = form.clk;
@@ -269,7 +276,7 @@ $.fn.ajaxSubmit = function(options) {
 
 			// support timout
 			if (s.timeout) {
-				setTimeout(function() { timedOut = true; cb(); }, s.timeout);
+				timeoutHandle = setTimeout(function() { timedOut = true; cb(true); }, s.timeout);
 			}
 
 			// add "extra" data to form if provided in options
@@ -307,13 +314,22 @@ $.fn.ajaxSubmit = function(options) {
 			setTimeout(doSubmit, 10); // this lets dom updates render
 		}
 	
-		var data, doc, domCheckCount = 50;
+		var data, doc, domCheckCount = 50, callbackProcessed;
 
-		function cb() {
-			doc = io.contentWindow ? io.contentWindow.document : io.contentDocument ? io.contentDocument : io.document;
+		function cb(e) {
+			if (xhr.aborted || callbackProcessed) {
+				return;
+			}
+			if (e === true && xhr) {
+				xhr.abort('timeout');
+				return;
+			}
+			
+			var doc = io.contentWindow ? io.contentWindow.document : io.contentDocument ? io.contentDocument : io.document;
 			if (!doc || doc.location.href == s.iframeSrc) {
 				// response not received yet
-				return;
+				if (!timedOut)
+					return;
 			}
             io.detachEvent ? io.detachEvent('onload', cb) : io.removeEventListener('load', cb, false);
 
@@ -341,12 +357,14 @@ $.fn.ajaxSubmit = function(options) {
 				//log('response detected');
 				xhr.responseText = doc.body ? doc.body.innerHTML : doc.documentElement ? doc.documentElement.innerHTML : null; 
 				xhr.responseXML = doc.XMLDocument ? doc.XMLDocument : doc;
+				if (!xhr.responseText && xhr.responseXML && !s.dataType) 
+					s.dataType = 'xml';
 				xhr.getResponseHeader = function(header){
 					var headers = {'content-type': s.dataType};
 					return headers[header];
 				};
 
-				var scr = /(json|script)/.test(s.dataType);
+				var scr = /(json|script|text)/.test(s.dataType);
 				if (scr || s.textarea) {
 					// see if user embedded response in textarea
 					var ta = doc.getElementsByTagName('textarea')[0];
@@ -375,7 +393,7 @@ $.fn.ajaxSubmit = function(options) {
 				log('error caught:',e);
 				ok = false;
 				xhr.error = e;
-				s.error.call(s.context, xhr, 'error', e);
+				s.error && s.error.call(s.context, xhr, 'error', e);
 				g && $.event.trigger("ajaxError", [xhr, s, e]);
 			}
 			
@@ -386,7 +404,7 @@ $.fn.ajaxSubmit = function(options) {
 
 			// ordering of these callbacks/triggers is odd, but that's how $.ajax does it
 			if (ok) {
-				s.success.call(s.context, data, 'success', xhr);
+				s.success && s.success.call(s.context, data, 'success', xhr);
 				g && $.event.trigger("ajaxSuccess", [xhr, s]);
 			}
 			
@@ -397,6 +415,10 @@ $.fn.ajaxSubmit = function(options) {
 			}
 			
 			s.complete && s.complete.call(s.context, xhr, ok ? 'success' : 'error');
+
+			callbackProcessed = true;
+			if (s.timeout)
+				clearTimeout(timeoutHandle);
 
 			// clean up
 			setTimeout(function() {
@@ -801,4 +823,3 @@ function log() {
 };
 
 })(jQuery);
-

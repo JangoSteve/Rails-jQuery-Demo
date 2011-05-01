@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.4'
+gem 'rails', '3.0.6'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -8,8 +8,8 @@ gem 'rails', '3.0.4'
 gem 'sqlite3'
 
 gem 'paperclip'
+#gem 'jquery-rails'
 gem 'jquery-rails', :git => 'git://github.com/pgericson/jquery-rails.git'
-gem 'remotipart', :git => 'git://github.com/JangoSteve/remotipart.git', :branch => 'latest-and-greatest'
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -33,3 +33,6 @@ gem 'remotipart', :git => 'git://github.com/JangoSteve/remotipart.git', :branch 
 # group :development, :test do
 #   gem 'webrat'
 # end
+group :development, :test do
+  gem 'rspec-rails'
+end

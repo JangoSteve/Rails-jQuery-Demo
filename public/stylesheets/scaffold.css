@@ -24,13 +24,22 @@ div.field, div.actions {
   color: green;
 }
 
+legend.required:before {
+  content: "*";
+  color: red;
+}
+label.required:after {
+  content: "*";
+  color: red;
+}
+
 .field_with_errors {
   padding: 2px;
   background-color: red;
   display: table;
 }
 
-#error_explanation {
+#error_explanation, #ajax-validation-errors {
   width: 450px;
   border: 2px solid red;
   padding: 7px;
@@ -39,7 +48,7 @@ div.field, div.actions {
   background-color: #f0f0f0;
 }
 
-#error_explanation h2 {
+#error_explanation h2, #ajax-validation-errors h2{
   text-align: left;
   font-weight: bold;
   padding: 5px 5px 5px 15px;
