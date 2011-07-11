@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/JangoSteve/remotipart.git
+  revision: f381c56f0e3f6cae60f5a3d018a068094159dc1c
+  branch: vendor-install
+  specs:
+    remotipart (0.3.4)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -94,5 +101,6 @@ DEPENDENCIES
   jquery-rails (= 1.0.12)
   paperclip
   rails (= 3.0.9)
+  remotipart!
   rspec-rails
   sqlite3
