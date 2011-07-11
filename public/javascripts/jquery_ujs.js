@@ -43,13 +43,16 @@
  *     });
  */
 
-(function($) {
+(function($, undefined) {
   // Shorthand to make it a little easier to call public rails functions from within rails.js
   var rails;
 
   $.rails = rails = {
     // Link elements bound by jquery-ujs
     linkClickSelector: 'a[data-confirm], a[data-method], a[data-remote]',
+
+		// Select elements bound by jquery-ujs
+		selectChangeSelector: 'select[data-remote]',
 
     // Form elements bound by jquery-ujs
     formSubmitSelector: 'form',
@@ -64,7 +67,7 @@
     enableSelector: 'input[data-disable-with]:disabled, button[data-disable-with]:disabled, textarea[data-disable-with]:disabled',
 
     // Form required input elements
-    requiredInputSelector: 'input[name][required],textarea[name][required]',
+    requiredInputSelector: 'input[name][required]:not([disabled]),textarea[name][required]:not([disabled])',
 
     // Form file input elements
     fileInputSelector: 'input:file',
@@ -95,6 +98,7 @@
     // Submits "remote" forms and links with ajax
     handleRemote: function(element) {
       var method, url, data,
+        crossDomain = element.data('cross-domain') || null,
         dataType = element.data('type') || ($.ajaxSettings && $.ajaxSettings.dataType);
 
       if (rails.fire(element, 'ajax:before')) {
@@ -109,14 +113,19 @@
             data.push(button);
             element.data('ujs:submit-button', null);
           }
-        } else {
+        } else if (element.is('select')) {
           method = element.data('method');
-          url = element.attr('href');
-          data = null;
+          url = element.data('url');
+					data = element.serialize();
+					if (element.data('params')) data = data + "&" + element.data('params'); 
+        } else {
+           method = element.data('method');
+           url = element.attr('href');
+           data = element.data('params') || null; 
         }
 
-        rails.ajax({
-          url: url, type: method || 'GET', data: data, dataType: dataType,
+        options = {
+          type: method || 'GET', data: data, dataType: dataType, crossDomain: crossDomain,
           // stopping the "ajax:beforeSend" event will cancel the ajax request
           beforeSend: function(xhr, settings) {
             if (settings.dataType === undefined) {
@@ -133,7 +142,11 @@
           error: function(xhr, status, error) {
             element.trigger('ajax:error', [xhr, status, error]);
           }
-        });
+        };
+        // Do not pass url to `ajax` options if blank
+        if (url) { $.extend(options, { url: url }); }
+
+        rails.ajax(options);
       }
     },
 
@@ -244,9 +257,9 @@
 
   // ajaxPrefilter is a jQuery 1.5 feature
   if ('ajaxPrefilter' in $) {
-    $.ajaxPrefilter(function(options, originalOptions, xhr){ rails.CSRFProtection(xhr); });
+    $.ajaxPrefilter(function(options, originalOptions, xhr){ if ( !options.crossDomain ) { rails.CSRFProtection(xhr); }});
   } else {
-    $(document).ajaxSend(function(e, xhr){ rails.CSRFProtection(xhr); });
+    $(document).ajaxSend(function(e, xhr, options){ if ( !options.crossDomain ) { rails.CSRFProtection(xhr); }});
   }
 
   $(rails.linkClickSelector).live('click.rails', function(e) {
@@ -261,6 +274,14 @@
       return false;
     }
   });
+
+	$(rails.selectChangeSelector).live('change.rails', function(e) {
+    var link = $(this);
+    if (!rails.allowAction(link)) return rails.stopEverything(e);
+
+    rails.handleRemote(link);
+    return false;
+  });	
 
   $(rails.formSubmitSelector).live('submit.rails', function(e) {
     var form = $(this),
