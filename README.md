@@ -1,12 +1,12 @@
-Demo Rails 3.0 App with jQuery UJS (AJAX)
+Demo Rails 3.1 App with jQuery UJS (AJAX)
 =========================================
 
-This is a very simple demo Rails 3.0 (currently rails-3.0.9) with all CRUD
+This is a very simple demo Rails 3.1 with all CRUD
 (create, read, update, delete) functionality in AJAX using the jquery-rails
 gem which bundles jquery-ujs.
 
 For relevant code, see the Comments controller and views. Also see unobtrusive
-bindings in public/javascripts/application.js.
+bindings in app/assets/javascripts/comments.js.
 
 Documentation & Resources
 -------------------------
