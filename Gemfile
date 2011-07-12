@@ -14,7 +14,7 @@ gem 'sqlite3'
 
 gem 'paperclip'
 gem 'jquery-rails', '1.0.12'
-gem 'remotipart', :git => 'git://github.com/JangoSteve/remotipart.git', :branch => 'vendor-install'
+gem 'remotipart', '~> 0.4'
 
 # Use unicorn as the web server
 # gem 'unicorn'
