@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/JangoSteve/remotipart.git
-  revision: f381c56f0e3f6cae60f5a3d018a068094159dc1c
+  revision: 9452620296b365c1a10cc859232d952d0f4c732c
   branch: vendor-install
   specs:
     remotipart (0.3.4)
