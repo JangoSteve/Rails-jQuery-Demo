@@ -40,5 +40,11 @@ module JqueryRails
     config.filter_parameters += [:password]
 
     config.assets.enabled = true
+
+    config.generators do |g|
+      g.test_framework :rspec
+      g.view_specs false
+      g.controller_specs false
+    end
   end
 end

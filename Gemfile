@@ -40,4 +40,10 @@ gem 'jquery-rails', '1.0.12'
 # end
 group :development, :test do
   gem 'rspec-rails'
+  gem 'capybara'
+  gem 'launchy'
+end
+
+group :test do
+  gem 'database_cleaner'
 end
