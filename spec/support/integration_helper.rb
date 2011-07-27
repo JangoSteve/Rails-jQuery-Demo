@@ -14,4 +14,15 @@ module IntegrationHelper
     yield
     page.evaluate_script 'window.confirm = window.original_confirm_function;'
   end
+
+  # Test that page doesn't redirect (there is probably a much better, built-in way to
+  # test this, I just don't know it.
+  def page_should_not_redirect
+    path = current_path
+    text = "bleep bloop"
+    page.execute_script "var txt = document.createTextNode('#{text}');document.body.appendChild(txt);"
+    yield
+    current_path.should == path
+    page.should have_content(text)
+  end
 end
