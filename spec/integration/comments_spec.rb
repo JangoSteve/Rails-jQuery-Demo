@@ -153,4 +153,38 @@ describe 'comments' do
 
     page.should have_no_content('remotipart!')
   end
+
+  it "fires all the ajax callbacks on the form", js: true do
+    visit root_path
+    click_link 'New Comment with Attachment'
+
+    page.execute_script("$('form').bind('ajax:beforeSend', function() { $('#comments').after('thebefore'); });")
+    page.execute_script("$('form').live('ajax:success', function() { $('#comments').after('success'); });")
+    page.execute_script("$('form').live('ajax:complete', function() { $('#comments').after('complete'); });")
+
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    page.should have_content('before')
+    page.should have_content('success')
+    page.should have_content('complete')
+  end
+
+  it "only fires the beforeSend hook once", js: true do
+    visit root_path
+    click_link 'New Comment with Attachment'
+
+    page.execute_script("$('form').bind('ajax:beforeSend', function() { $('#comments').after('<div class=\"ajax\">ajax!</div>'); });")
+
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    page.should have_css("div.ajax", :count => 1)
+  end
 end
