@@ -206,4 +206,34 @@ describe 'comments' do
     page.execute_script("if (!$('form').data('remotipartSubmitted')) { $('#comments').after('no remotipart after!'); } ")
     page.should have_content('no remotipart after!')
   end
+
+  it "only submits via remotipart when a file upload is present", js: true do
+    visit root_path
+    page.execute_script("$('form').live('ajax:remotipartSubmit', function(evt, xhr, data) { $('#comments').after('<div class=\"remotipart\">remotipart!</div>'); });")
+
+    click_link 'New Comment with Attachment'
+    page.execute_script("$('form').attr('data-type', 'html');")
+
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    page.should have_css("div.remotipart", :count => 1)
+
+    # replace form html, in order clear out the file field (couldn't think of a better way)
+    page.execute_script("inputs = $('form').find(':file'); inputs.remove();")
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    click_button 'Create Comment'
+
+    page.should have_css("div.remotipart", :count => 1)
+
+    page.execute_script("$('form').append(inputs);")
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    page.should have_css("div.remotipart", :count => 2)
+  end
 end
