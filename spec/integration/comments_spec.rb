@@ -187,4 +187,23 @@ describe 'comments' do
 
     page.should have_css("div.ajax", :count => 1)
   end
+
+  it "cleans up after itself when uploading files", js: true do
+    visit root_path
+    page.execute_script("$('form').live('ajax:remotipartSubmit', function(evt, xhr, data) { if ($(this).data('remotipartSubmitted')) { $('#comments').after('remotipart before!'); } });")
+
+    click_link 'New Comment with Attachment'
+    page.execute_script("$('form').attr('data-type', 'html');")
+
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    page.should have_content('remotipart before!')
+
+    page.execute_script("if (!$('form').data('remotipartSubmitted')) { $('#comments').after('no remotipart after!'); } ")
+    page.should have_content('no remotipart after!')
+  end
 end
