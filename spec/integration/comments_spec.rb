@@ -89,4 +89,68 @@ describe 'comments' do
       page.should have_content(File.basename(other_file_path))
     end
   end
+
+  it "triggers ajax:remotipartSubmit event hook", js: true do
+    visit root_path
+    page.execute_script("$('form').live('ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); });")
+
+    click_link 'New Comment with Attachment'
+
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    click_button 'Create Comment'
+
+    page.should have_content('remotipart!')
+  end
+
+  it "allows remotipart submission to be cancelable via event hook", js: true do
+    visit root_path
+    page.execute_script("$('form').live('ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); return false; });")
+
+    click_link 'New Comment with Attachment'
+
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    page.should have_content('remotipart!')
+
+    within '#comments' do
+      page.should have_no_content('Hi')
+      page.should have_no_content('there')
+      page.should have_no_content(File.basename(file_path))
+    end
+  end
+
+  it "allows custom data-type on form", js: true do
+    visit root_path
+    page.execute_script("$('form').live('ajax:success', function(evt, data, status, xhr) { $('#comments').after(xhr.responseText); });")
+
+    click_link 'New Comment with Attachment'
+    page.execute_script("$('form').attr('data-type', 'html');")
+
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    page.should have_content('HTML response')
+  end
+
+  it "does not submit via remotipart unless file is present", js: true do
+    visit root_path
+    page.execute_script("$('form').live('ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); });")
+
+    click_link 'New Comment with Attachment'
+
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    click_button 'Create Comment'
+
+    page.should have_no_content('remotipart!')
+  end
 end

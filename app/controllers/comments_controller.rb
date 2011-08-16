@@ -33,6 +33,7 @@ class CommentsController < ApplicationController
   def create
     @comment = Comment.create(params[:comment])
     redirect_to comments_path unless request.xhr? || params[:remotipart_submitted]
+    render :layout => false if request.xhr? || remotipart_submitted?
   end
 
   # PUT /comments/1
