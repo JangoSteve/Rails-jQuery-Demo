@@ -105,7 +105,7 @@ GEM
       rack (>= 1.0)
     rake (0.9.2)
     rdoc (3.8)
-    remotipart (0.4)
+    remotipart (1.0)
     rspec (2.6.0)
       rspec-core (~> 2.6.0)
       rspec-expectations (~> 2.6.0)
@@ -153,7 +153,7 @@ DEPENDENCIES
   launchy
   paperclip
   rails!
-  remotipart (~> 0.4)
+  remotipart (~> 1.0)
   rspec-rails
   sass
   sqlite3
