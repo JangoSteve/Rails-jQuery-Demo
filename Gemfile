@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
-#gem 'rails', '3.1.0.rc4'
-gem 'rails', :git => 'git://github.com/rails/rails', :branch => '3-1-stable'
+gem 'rails', '3.1.0.rc8'
+#gem 'rails', :git => 'git://github.com/rails/rails', :branch => '3-1-stable'
 
 gem 'sass'
 gem 'coffee-script'
@@ -10,11 +10,12 @@ gem 'uglifier'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'sqlite3'
+gem 'sqlite3', '1.3.4'
 
 gem 'paperclip'
 #gem 'jquery-rails'
-gem 'jquery-rails', '1.0.12'
+gem 'jquery-rails', '1.0.13'
+#gem 'activerecord-sqlite3-adapter'
 
 # Use unicorn as the web server
 # gem 'unicorn'
