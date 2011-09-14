@@ -13,7 +13,6 @@ gem 'uglifier'
 gem 'sqlite3', '1.3.4'
 
 gem 'paperclip'
-#gem 'jquery-rails'
 gem 'jquery-rails', '1.0.13'
 #gem 'activerecord-sqlite3-adapter'
 
