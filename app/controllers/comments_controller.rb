@@ -1,6 +1,6 @@
 class CommentsController < ApplicationController
-  respond_to :html, :xml
-  respond_to :js, :only => [:create, :update, :destroy]
+  respond_to :json, :html, :xml
+  #respond_to :js, :only => [:create, :update, :destroy]
   # GET /comments
   # GET /comments.xml
   def index
@@ -32,7 +32,8 @@ class CommentsController < ApplicationController
   # POST /comments.xml
   def create
     @comment = Comment.create(params[:comment])
-    redirect_to comments_path unless request.xhr?
+    respond_with(@comment)
+    #redirect_to comments_path unless request.xhr?
   end
 
   # PUT /comments/1
