@@ -1,4 +1,5 @@
 JqueryRails::Application.routes.draw do
+  match 'comments' => 'comments#create', :via => [:put]
   resources :comments
 
   # The priority is based upon order of creation:

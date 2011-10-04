@@ -6,6 +6,9 @@
     $('#new-comment-form-container').replaceWith( '<%= escape_javascript(
       render 'new_comment_links'
     ) %>' );
+    <% if request.put? %>
+        $('#comments').after('PUT request!');
+    <% end %>
   <% else %>
     var $form = $('#new_comment'),
         $errorDiv = $('<div id="error_explanation">'),

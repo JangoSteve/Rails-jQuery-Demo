@@ -159,6 +159,21 @@ describe 'comments' do
     page.should have_content "Error status: 422"
   end
 
+  it "passes the method as _method parameter (rails convention)", js: true do
+    visit root_path
+
+    click_link 'New Comment with Attachment'
+    page.execute_script(%q{$('form').append('<input name="_method" type="hidden" value="put" />');})
+
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    page.should have_content 'PUT request!'
+  end
+
   it "does not submit via remotipart unless file is present", js: true do
     visit root_path
     page.execute_script("$('form').live('ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); });")
