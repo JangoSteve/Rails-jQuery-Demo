@@ -141,6 +141,24 @@ describe 'comments' do
     page.should have_content('HTML response')
   end
 
+  it "returns the correct response status", js: true do
+    visit root_path
+    page.execute_script("$('form').live('ajax:error', function(evt, xhr, status, error) { $('#comments').after('Error status: ' + xhr.status); });")
+
+    click_link 'New Comment with Attachment'
+    page.execute_script("$('#comment_subject').removeAttr('required');")
+
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    #within '#error_explanation' do
+    #  page.should have_content "Subject can't be blank"
+    #end
+    page.should have_content "Error status: 422"
+  end
+
   it "does not submit via remotipart unless file is present", js: true do
     visit root_path
     page.execute_script("$('form').live('ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); });")

@@ -32,8 +32,11 @@ class CommentsController < ApplicationController
   # POST /comments.xml
   def create
     @comment = Comment.create(params[:comment])
-    redirect_to comments_path unless request.xhr? || params[:remotipart_submitted]
-    render :layout => false if request.xhr? || remotipart_submitted?
+    if request.xhr? || remotipart_submitted?
+      render :layout => false, :status => (@comment.errors.any? ? :unprocessable_entity : :ok)
+    else
+      redirect_to comments_path
+    end
   end
 
   # PUT /comments/1
