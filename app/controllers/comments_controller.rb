@@ -1,6 +1,6 @@
 class CommentsController < ApplicationController
   respond_to :html, :xml
-  respond_to :js, :only => [:create, :update, :destroy]
+  respond_to :js, :json, :only => [:create, :update, :destroy]
   # GET /comments
   # GET /comments.xml
   def index
