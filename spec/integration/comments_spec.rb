@@ -125,6 +125,40 @@ describe 'comments' do
     end
   end
 
+  it "allows json response", js: true do
+    visit root_path
+    page.execute_script("$('form').live('ajax:success', function(evt, data, status, xhr) { $('#comments').after(data.json_response); });")
+    page.execute_script("$('form').live('ajax:error', function(evt, xhr, status, error) { $('#comments').after('Failure: ' + status); });")
+
+    click_link 'New Comment'
+
+    page.execute_script("$('form').attr('action', '/comments.json');")
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    click_button 'Create Comment'
+
+    page.should have_content('JSON response')
+  end
+
+  it "allows json response with attachment", js: true do
+    visit root_path
+    page.execute_script("$('form').live('ajax:success', function(evt, data, status, xhr) { $('#comments').after(data.json_response); });")
+    page.execute_script("$('form').live('ajax:error', function(evt, xhr, status, error) { $('#comments').after('Failure: ' + status); });")
+
+    click_link 'New Comment with Attachment'
+
+    page.execute_script("$('form').attr('action', '/comments.json');")
+    page.execute_script("$('form').attr('data-type', 'json');")
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    page.should have_content('JSON response')
+  end
+
   it "allows custom data-type on form", js: true do
     visit root_path
     page.execute_script("$('form').live('ajax:success', function(evt, data, status, xhr) { $('#comments').after(xhr.responseText); });")

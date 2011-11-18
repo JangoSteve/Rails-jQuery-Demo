@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
-#gem 'rails', '3.1.0.rc4'
-gem 'rails', :git => 'git://github.com/rails/rails', :branch => '3-1-stable'
+gem 'rails', '~> 3.1.0'
+#gem 'rails', :git => 'git://github.com/rails/rails', :branch => '3-1-stable'
 
 gem 'sass'
 gem 'coffee-script'
