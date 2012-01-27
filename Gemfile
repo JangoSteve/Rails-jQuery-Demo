@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.3'
+gem 'rails', '3.2.0'
 #gem 'rails', :git => 'git://github.com/rails/rails', :branch => '3-1-stable'
 
 gem 'sass'
@@ -13,7 +13,7 @@ gem 'uglifier'
 gem 'sqlite3'
 
 gem 'paperclip'
-gem 'jquery-rails', '1.0.12'
+gem 'jquery-rails'
 gem 'remotipart', '~> 1.0'
 
 # Use unicorn as the web server
