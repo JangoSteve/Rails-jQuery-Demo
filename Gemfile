@@ -13,8 +13,8 @@ gem 'uglifier'
 gem 'sqlite3'
 
 gem 'paperclip'
-gem 'jquery-rails', '1.0.12'
-gem 'remotipart', '~> 1.0'
+gem 'jquery-rails', '1.0.19'
+gem 'remotipart', '~> 1.0.1'
 
 # Use unicorn as the web server
 # gem 'unicorn'
