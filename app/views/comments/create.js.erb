@@ -2,9 +2,7 @@
   $('#comments').append( '<%= escape_javascript(
     render @comment
   ) %>' );
-  $('#new-comment-form-container').replaceWith( '<%= escape_javascript(
-    render 'new_comment_links'
-  ) %>' );
+  $('#new-comment-form-container').find('input:not(:submit),select,textarea').val('');
 <% else %>
   var $form = $('#new_comment'),
       $errorDiv = $('<div id="error_explanation">'),

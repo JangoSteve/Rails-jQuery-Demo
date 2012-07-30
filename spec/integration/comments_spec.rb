@@ -24,11 +24,11 @@ describe 'comments' do
       page.should have_content(comment_subject)
       page.should have_content(comment_body)
     end
-    # Form should disappear
-    page.should have_no_field('comment_subject')
-    page.should have_no_field('comment_body')
+    # Form should clear
+    page.should have_field('comment_subject', with: '')
+    page.should have_field('comment_body', with: '')
     # ...and be replaced by link again
-    page.should have_link('New Comment')
+    page.should have_link('Cancel')
   end
 
   it "cancels creating a comment", js: true do
