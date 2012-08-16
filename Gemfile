@@ -13,7 +13,7 @@ gem 'uglifier'
 gem 'sqlite3'
 
 gem 'paperclip'
-gem 'jquery-rails', :path => '../jquery-rails'
+gem 'jquery-rails'
 #gem 'activerecord-sqlite3-adapter'
 
 # Use unicorn as the web server
