@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'tempfile'
 
 describe 'comments' do
   it 'creates a new comment', js: true do
@@ -55,6 +56,35 @@ describe 'comments' do
       end
 
       page.should have_no_content('The Great Yogurt')
+    end
+  end
+
+  it "aborts ajax file upload and submits normally", js: true do
+    visit root_path
+    click_link 'New Comment with Attachment'
+
+    page.execute_script("$(document).delegate('form', 'ajax:aborted:file', function() { $('#comments').after('aborted: file'); return false; });")
+
+    # Filling in form and submitting
+    comment_subject = 'A new comment!'
+    comment_body = 'Woo, this is my comment, dude.'
+    fill_in 'comment_subject', with: comment_subject
+    fill_in 'comment_body', with: comment_body
+    # Attach file
+    file = Tempfile.new('foo')
+    attach_file 'comment_attachment', file.path
+    click_button 'Create Comment'
+
+    # Comment should appear in the comments table
+    page.should have_content('aborted: file')
+
+    page.execute_script("$(document).delegate('form', 'ajax:aborted:file', function() { return true; });")
+    click_button 'Create Comment'
+
+    # Comment should appear in the comments table
+    within '.comment' do
+      page.should have_content(comment_subject)
+      page.should have_content(comment_body)
     end
   end
 end
