@@ -9,9 +9,34 @@ require 'capybara/rails'
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
-DatabaseCleaner.strategy = :truncation
+def in_memory_database?
+  Rails.env == "test" and
+    ActiveRecord::Base.connection.class == ActiveRecord::ConnectionAdapters::SQLiteAdapter ||
+    ActiveRecord::Base.connection.class == ActiveRecord::ConnectionAdapters::SQLite3Adapter and
+    Rails.configuration.database_configuration['test']['database'] == ':memory:'
+end
+
+if in_memory_database?
+  class ActiveRecord::Base
+    mattr_accessor :shared_connection
+    @@shared_connection = nil
+
+    def self.connection
+      @@shared_connection || retrieve_connection
+    end
+  end
+end
+
+# Forces all threads to share the same connection. This works on
+# Capybara because it starts the web server in a thread.
+ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
 
 RSpec.configure do |config|
+
+  if in_memory_database?
+    load "#{Rails.root.to_s}/db/schema.rb" # use db agnostic schema by default
+  end
+
   config.include IntegrationHelper, :type => :request
   # == Mock Framework
   #
@@ -30,11 +55,11 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
+
   config.before :each do
-    DatabaseCleaner.start
+    DatabaseCleaner.clean
   end
   config.after :each do
-    DatabaseCleaner.clean
   end
 end
