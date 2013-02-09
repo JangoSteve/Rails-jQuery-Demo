@@ -92,7 +92,7 @@ describe 'comments' do
 
   it "triggers ajax:remotipartSubmit event hook", js: true do
     visit root_path
-    page.execute_script("$('form').live('ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); });")
+    page.execute_script("$(document).delegate('form', 'ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); });")
 
     click_link 'New Comment with Attachment'
 
@@ -106,7 +106,7 @@ describe 'comments' do
 
   it "allows remotipart submission to be cancelable via event hook", js: true do
     visit root_path
-    page.execute_script("$('form').live('ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); return false; });")
+    page.execute_script("$(document).delegate('form', 'ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); return false; });")
 
     click_link 'New Comment with Attachment'
 
@@ -127,7 +127,7 @@ describe 'comments' do
 
   it "allows custom data-type on form", js: true do
     visit root_path
-    page.execute_script("$('form').live('ajax:success', function(evt, data, status, xhr) { $('#comments').after(xhr.responseText); });")
+    page.execute_script("$(document).delegate('form', 'ajax:success', function(evt, data, status, xhr) { $('#comments').after(xhr.responseText); });")
 
     click_link 'New Comment with Attachment'
     page.execute_script("$('form').attr('data-type', 'html');")
@@ -143,7 +143,7 @@ describe 'comments' do
 
   it "returns the correct response status", js: true do
     visit root_path
-    page.execute_script("$('form').live('ajax:error', function(evt, xhr, status, error) { $('#comments').after('Error status: ' + xhr.status); });")
+    page.execute_script("$(document).delegate('form', 'ajax:error', function(evt, xhr, status, error) { $('#comments').after('Error status: ' + xhr.status); });")
 
     click_link 'New Comment with Attachment'
     page.execute_script("$('#comment_subject').removeAttr('required');")
@@ -176,7 +176,7 @@ describe 'comments' do
 
   it "does not submit via remotipart unless file is present", js: true do
     visit root_path
-    page.execute_script("$('form').live('ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); });")
+    page.execute_script("$(document).delegate('form', 'ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); });")
 
     click_link 'New Comment with Attachment'
 
@@ -192,8 +192,8 @@ describe 'comments' do
     click_link 'New Comment with Attachment'
 
     page.execute_script("$('form').bind('ajax:beforeSend', function() { $('#comments').after('thebefore'); });")
-    page.execute_script("$('form').live('ajax:success', function() { $('#comments').after('success'); });")
-    page.execute_script("$('form').live('ajax:complete', function() { $('#comments').after('complete'); });")
+    page.execute_script("$(document).delegate('form', 'ajax:success', function() { $('#comments').after('success'); });")
+    page.execute_script("$(document).delegate('form', 'ajax:complete', function() { $('#comments').after('complete'); });")
 
     file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
     fill_in 'comment_subject', with: 'Hi'
@@ -223,7 +223,7 @@ describe 'comments' do
 
   it "cleans up after itself when uploading files", js: true do
     visit root_path
-    page.execute_script("$('form').live('ajax:remotipartSubmit', function(evt, xhr, data) { if ($(this).data('remotipartSubmitted')) { $('#comments').after('remotipart before!'); } });")
+    page.execute_script("$(document).delegate('form', 'ajax:remotipartSubmit', function(evt, xhr, data) { if ($(this).data('remotipartSubmitted')) { $('#comments').after('remotipart before!'); } });")
 
     click_link 'New Comment with Attachment'
     page.execute_script("$('form').attr('data-type', 'html');")
@@ -242,7 +242,7 @@ describe 'comments' do
 
   it "only submits via remotipart when a file upload is present", js: true do
     visit root_path
-    page.execute_script("$('form').live('ajax:remotipartSubmit', function(evt, xhr, data) { $('#comments').after('<div class=\"remotipart\">remotipart!</div>'); });")
+    page.execute_script("$(document).delegate('form', 'ajax:remotipartSubmit', function(evt, xhr, data) { $('#comments').after('<div class=\"remotipart\">remotipart!</div>'); });")
 
     click_link 'New Comment with Attachment'
     page.execute_script("$('form').attr('data-type', 'html');")
