@@ -264,6 +264,8 @@ describe 'comments' do
     page.should have_css("div.remotipart", :count => 1)
 
     page.execute_script("$('form').append(inputs);")
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
     attach_file 'comment_attachment', file_path
     click_button 'Create Comment'
 
