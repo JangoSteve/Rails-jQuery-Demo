@@ -46,8 +46,8 @@ describe 'comments' do
 
   it "deletes a comment", js: true do
     Comment.create(subject: 'The Great Yogurt', body: 'The Schwarz is strong with this one.')
-
     visit root_path
+
     within '#comments' do
       page.should have_content('The Great Yogurt')
       accept_js_confirm do
