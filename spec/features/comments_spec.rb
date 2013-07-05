@@ -90,6 +90,30 @@ describe 'comments' do
     end
   end
 
+  it "Disables submit button while submitting", js: true do
+    visit root_path
+
+    click_link 'New Comment'
+    # Needed to make test wait for above to finish
+    form = find('form')
+
+    page.execute_script(%q{$('form').append('<input name="pause" type="hidden" value=1 />');})
+
+    button = find_button('Create Comment')
+
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    click_button 'Create Comment'
+
+    %w(true disabled).should include(button[:disabled])
+    button.value.should eq "Submitting..."
+
+    sleep 1.5
+
+    button[:disabled].should_not be
+    button.value.should eq "Create Comment"
+  end
+
   it "triggers ajax:remotipartSubmit event hook", js: true do
     visit root_path
     page.execute_script("$(document).delegate('form', 'ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); });")
@@ -273,7 +297,7 @@ describe 'comments' do
     page.should have_css("div.remotipart", :count => 2)
   end
 
-  it "Disables submit button while submitting", js: true do
+  it "Disables submit button while submitting with remotipart", js: true do
     visit root_path
 
     click_link 'New Comment with Attachment'
