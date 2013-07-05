@@ -163,6 +163,7 @@ describe 'comments' do
     visit root_path
 
     click_link 'New Comment with Attachment'
+    sleep 0.5
     page.execute_script(%q{$('form').append('<input name="_method" type="hidden" value="put" />');})
 
     file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
