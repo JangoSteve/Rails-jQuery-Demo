@@ -169,6 +169,8 @@ describe 'comments' do
     visit root_path
 
     click_link 'New Comment with Attachment'
+    # Needed to make test wait for above to finish
+    input = find('#comment_subject')
     page.execute_script("$('#comment_subject').removeAttr('required');")
 
     file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
@@ -215,6 +217,9 @@ describe 'comments' do
   it "fires all the ajax callbacks on the form", js: true do
     visit root_path
     click_link 'New Comment with Attachment'
+
+    # Needed to make test wait for above to finish
+    form = find('form')
 
     page.execute_script("$('form').bind('ajax:beforeSend', function() { $('#comments').after('thebefore'); });")
     page.execute_script("$(document).delegate('form', 'ajax:success', function() { $('#comments').after('success'); });")
@@ -279,6 +284,8 @@ describe 'comments' do
     click_button 'Create Comment'
 
     page.should have_css("div.remotipart", :count => 1)
+    # Needed to force page capybara to wiat for the above requests to finish
+    form = find('form')
 
     # replace form html, in order clear out the file field (couldn't think of a better way)
     page.execute_script("inputs = $('form').find(':file'); inputs.remove();")
@@ -287,6 +294,8 @@ describe 'comments' do
     click_button 'Create Comment'
 
     page.should have_css("div.remotipart", :count => 1)
+    # Needed to force page capybara to wiat for the above requests to finish
+    form = find('form')
 
     page.execute_script("$('form').append(inputs);")
     fill_in 'comment_subject', with: 'Hi'
