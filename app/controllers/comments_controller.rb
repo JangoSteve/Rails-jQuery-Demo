@@ -33,6 +33,7 @@ class CommentsController < ApplicationController
   def create
     @comment = Comment.create(params[:comment])
     if request.xhr? || remotipart_submitted?
+      sleep 1 if params[:pause]
       render :layout => false, :status => (@comment.errors.any? ? :unprocessable_entity : :ok)
     else
       redirect_to comments_path
