@@ -32,6 +32,7 @@ class CommentsController < ApplicationController
   # POST /comments.xml
   def create
     @comment = Comment.create(params[:comment])
+    sleep 1 if params[:pause]
     respond_with(@comment)
     #redirect_to comments_path unless request.xhr?
   end
