@@ -154,6 +154,9 @@ describe 'comments' do
     page.execute_script("$(document).delegate('form', 'ajax:success', function(evt, data, status, xhr) { $('#comments').after(xhr.responseText); });")
 
     click_link 'New Comment with Attachment'
+
+    # Needed to make test wait for above to finish
+    form = find('form')
     page.execute_script("$('form').attr('data-type', 'html');")
 
     file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
@@ -163,6 +166,26 @@ describe 'comments' do
     click_button 'Create Comment'
 
     page.should have_content('HTML response')
+  end
+
+  it "escapes html response content properly", js: true do
+    visit root_path
+    page.execute_script("$(document).delegate('form', 'ajax:success', function(evt, data, status, xhr) { $('#comments').after(xhr.responseText); });")
+
+    click_link 'New Comment with Attachment'
+
+    # Needed to make test wait for above to finish
+    form = find('form')
+    page.execute_script("$('form').attr('data-type', 'html');")
+    page.execute_script("$('form').append('<input type=\"hidden\" name=\"template\" value=\"escape\" />');")
+
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    find('input[name="quote"]').value.should eq '"'
   end
 
   it "returns the correct response status", js: true do
