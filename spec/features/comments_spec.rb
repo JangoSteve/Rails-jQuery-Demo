@@ -143,7 +143,6 @@ describe 'comments' do
 
   it "returns the correct response status", js: true do
     visit root_path
-    page.execute_script("$(document).delegate('form', 'ajax:error', function(evt, xhr, status, error) { $('#comments').after('Error status: ' + xhr.status); });")
 
     click_link 'New Comment with Attachment'
     page.execute_script("$('#comment_subject').removeAttr('required');")
@@ -156,7 +155,8 @@ describe 'comments' do
     #within '#error_explanation' do
     #  page.should have_content "Subject can't be blank"
     #end
-    page.should have_content "Error status: 422"
+    page.should have_content "Error status code: 422"
+    page.should have_content "Error status message: Unprocessable Entity"
   end
 
   it "passes the method as _method parameter (rails convention)", js: true do
