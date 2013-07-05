@@ -328,4 +328,20 @@ describe 'comments' do
     button[:disabled].should_not be
     button.value.should eq "Create Comment"
   end
+
+  it "submits the clicked button with the form like non-file remote form", js: true do
+    visit root_path
+    click_link 'New Comment with Attachment'
+
+    form = find('form')
+    page.execute_script("$('form').bind('ajax:remotipartSubmit', function(e, xhr, settings) { $('#comments').after('<div class=\"params\">' + $.param(settings.data) + '</div>'); });")
+
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    page.should have_content('commit=')
+  end
 end
