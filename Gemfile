@@ -40,6 +40,7 @@ gem 'jquery-rails'
 # end
 group :development, :test do
   gem 'rspec-rails'
+  gem 'selenium-webdriver'
   gem 'capybara'
   gem 'launchy'
 end

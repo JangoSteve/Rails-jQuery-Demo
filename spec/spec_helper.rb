@@ -37,7 +37,7 @@ RSpec.configure do |config|
     load "#{Rails.root.to_s}/db/schema.rb" # use db agnostic schema by default
   end
 
-  config.include IntegrationHelper, :type => :request
+  config.include IntegrationHelper, :type => :feature
   # == Mock Framework
   #
   # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
