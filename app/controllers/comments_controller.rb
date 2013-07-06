@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  respond_to :html, :xml
+  respond_to :html, :xml, :json
   respond_to :js, :only => [:create, :update, :destroy]
   # GET /comments
   # GET /comments.xml

@@ -259,6 +259,30 @@ describe 'comments' do
     page.should have_content('complete')
   end
 
+  it "fires the ajax callbacks for json data-type with remotipart", js: true do
+    visit root_path
+    click_link 'New Comment with Attachment'
+
+    # Needed to make test wait for above to finish
+    form = find('form')
+
+    page.execute_script("$('form').data('type', 'json');")
+
+    page.execute_script("$('form').bind('ajax:beforeSend', function() { $('#comments').after('thebefore'); });")
+    page.execute_script("$(document).delegate('form', 'ajax:success', function() { $('#comments').after('success'); });")
+    page.execute_script("$(document).delegate('form', 'ajax:complete', function() { $('#comments').after('complete'); });")
+
+    file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
+    fill_in 'comment_subject', with: 'Hi'
+    fill_in 'comment_body', with: 'there'
+    attach_file 'comment_attachment', file_path
+    click_button 'Create Comment'
+
+    page.should have_content('before')
+    page.should have_content('success')
+    page.should have_content('complete')
+  end
+
   it "only fires the beforeSend hook once", js: true do
     visit root_path
     click_link 'New Comment with Attachment'
