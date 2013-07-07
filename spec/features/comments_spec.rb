@@ -287,6 +287,9 @@ describe 'comments' do
     visit root_path
     click_link 'New Comment with Attachment'
 
+    # Needed to make test wait for above to finish
+    form = find('form')
+
     page.execute_script("$('form').bind('ajax:beforeSend', function() { $('#comments').after('<div class=\"ajax\">ajax!</div>'); });")
 
     file_path = File.join(Rails.root, 'spec/fixtures/qr.jpg')
