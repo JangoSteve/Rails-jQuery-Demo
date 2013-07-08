@@ -31,7 +31,7 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.xml
   def create
-    @comment = Comment.create(params[:comment])
+    @comment = Comment.create(comment_params)
     if request.xhr? || remotipart_submitted?
       sleep 1 if params[:pause]
       render :layout => false, :template => (params[:template] == 'escape' ? 'comments/escape_test' : 'comments/create'), :status => (@comment.errors.any? ? :unprocessable_entity : :ok)
@@ -53,5 +53,11 @@ class CommentsController < ApplicationController
   # DELETE /comments/1.xml
   def destroy
     @comment = Comment.destroy(params[:id])
+  end
+
+  private
+
+  def comment_params
+    params.require(:comment).permit(:subject, :body, :attachment, :other_attachment)
   end
 end

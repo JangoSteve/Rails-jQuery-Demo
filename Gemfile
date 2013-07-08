@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '~> 3.2.0'
+gem 'rails', '~> 4.0'
 #gem 'rails', :git => 'git://github.com/rails/rails', :branch => '3-1-stable'
 
 gem 'sass'

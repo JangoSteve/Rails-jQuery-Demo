@@ -12,7 +12,6 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 def in_memory_database?
   Rails.env == "test" and
-    ActiveRecord::Base.connection.class == ActiveRecord::ConnectionAdapters::SQLiteAdapter ||
     ActiveRecord::Base.connection.class == ActiveRecord::ConnectionAdapters::SQLite3Adapter and
     Rails.configuration.database_configuration['test']['database'] == ':memory:'
 end
