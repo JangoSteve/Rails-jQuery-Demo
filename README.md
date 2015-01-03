@@ -1,6 +1,8 @@
 Demo Rails 3.1 App with jQuery UJS (AJAX)
 =========================================
 
+[![Build Status](https://travis-ci.org/JangoSteve/Rails-jQuery-Demo.svg?branch=master)](https://travis-ci.org/JangoSteve/Rails-jQuery-Demo)
+
 This is a very simple demo Rails 3.1 with all CRUD
 (create, read, update, delete) functionality in AJAX using the jquery-rails
 gem which bundles jquery-ujs.
