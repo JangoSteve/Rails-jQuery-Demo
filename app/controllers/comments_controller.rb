@@ -31,7 +31,7 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.xml
   def create
-    @comment = Comment.create(params[:comment])
+    @comment = Comment.create(comment_params)
     sleep 1 if params[:pause]
     respond_with(@comment)
     #redirect_to comments_path unless request.xhr?
@@ -51,4 +51,15 @@ class CommentsController < ApplicationController
   def destroy
     @comment = Comment.destroy(params[:id])
   end
+
+  private
+
+  def comment_params
+    if ENV["RAILS_VERSION"] != '3.2'
+      params.require(:comment).permit(:subject, :body, :attachment)
+    else
+      params[:comment]
+    end
+  end
+
 end

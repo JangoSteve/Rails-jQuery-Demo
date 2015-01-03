@@ -12,8 +12,8 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 def in_memory_database?
   Rails.env == "test" and
-    ActiveRecord::Base.connection.class == ActiveRecord::ConnectionAdapters::SQLiteAdapter ||
-    ActiveRecord::Base.connection.class == ActiveRecord::ConnectionAdapters::SQLite3Adapter and
+    ActiveRecord::Base.connection.class == ActiveRecord::ConnectionAdapters::SQLite3Adapter ||
+    ActiveRecord::Base.connection.class == ActiveRecord::ConnectionAdapters::SQLiteAdapter and
     Rails.configuration.database_configuration['test']['database'] == ':memory:'
 end
 
@@ -39,6 +39,8 @@ RSpec.configure do |config|
   end
 
   config.include IntegrationHelper, :type => :feature
+  config.include Rails.application.routes.url_helpers
+  config.include Capybara::DSL
   # == Mock Framework
   #
   # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
@@ -55,6 +57,9 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = false
+
+  config.filter_run focus: true
+  config.run_all_when_everything_filtered = true
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation

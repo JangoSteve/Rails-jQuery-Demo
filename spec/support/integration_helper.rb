@@ -15,3 +15,7 @@ module IntegrationHelper
     page.evaluate_script 'window.confirm = window.original_confirm_function;'
   end
 end
+
+RSpec.configure do |config|
+  config.include IntegrationHelper
+end

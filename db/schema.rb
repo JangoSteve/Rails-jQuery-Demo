@@ -9,11 +9,11 @@
 # from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
-# It's strongly recommended to check this file into your version control system.
+# It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110714205346) do
+ActiveRecord::Schema.define(version: 20110209210315) do
 
-  create_table "comments", :force => true do |t|
+  create_table "comments", force: :cascade do |t|
     t.string   "subject"
     t.text     "body"
     t.datetime "created_at"
@@ -22,10 +22,6 @@ ActiveRecord::Schema.define(:version => 20110714205346) do
     t.string   "attachment_content_type"
     t.integer  "attachment_file_size"
     t.datetime "attachment_updated_at"
-    t.string   "other_attachment_file_name"
-    t.string   "other_attachment_content_type"
-    t.integer  "other_attachment_file_size"
-    t.datetime "other_attachment_updated_at"
   end
 
 end

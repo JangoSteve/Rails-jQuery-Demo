@@ -11,6 +11,7 @@ gem 'sqlite3'
 
 gem 'paperclip'
 gem 'jquery-rails'
+gem 'responders', '~> 2.0'
 #gem 'activerecord-sqlite3-adapter'
 
 # Use unicorn as the web server
