@@ -1,6 +1,16 @@
 source 'http://rubygems.org'
 
-gem 'rails', '~> 3.2.0'
+rails_version = ENV["RAILS_VERSION"] || "default"
+
+rails = case rails_version
+when "default"
+  "~> 3.2.0"
+else
+  "~> #{rails_version}"
+end
+
+gem "rails", rails
+
 #gem 'rails', :git => 'git://github.com/rails/rails', :branch => '3-1-stable'
 
 gem 'sass'
