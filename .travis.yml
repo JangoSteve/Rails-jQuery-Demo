@@ -1,0 +1,6 @@
+language: ruby
+cache: bundler
+rvm:
+  - 2.1.5
+script:
+  - RAILS_ENV=test xvfb-run bundle exec rspec
