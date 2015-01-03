@@ -3,7 +3,7 @@ cache: bundler
 rvm:
   - 2.1.5
 env:
-  - "RAILS_VERSION=3.2.0"
+  - "RAILS_VERSION=3.2"
   - "RAILS_VERSION=4.0"
   - "RAILS_VERSION=4.1"
   - "RAILS_VERSION=4.2"
