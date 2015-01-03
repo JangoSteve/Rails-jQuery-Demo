@@ -40,7 +40,7 @@ gem 'remotipart'#, :path => '../remotipart'
 # end
 group :development, :test do
   gem 'rspec-rails'
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '~> 2.44.0'
   gem 'capybara'
   gem 'launchy'
 end
