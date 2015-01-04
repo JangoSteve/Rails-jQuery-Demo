@@ -7,11 +7,11 @@ describe 'comments' do
     click_link 'New Comment'
 
     # New Comment link should disappear
-    page.should have_no_link('New Comment')
+    expect(page).to have_no_link('New Comment')
     # Comment form should appear
-    page.should have_field('comment_subject')
-    page.should have_field('comment_body')
-    page.should have_no_field('comment_file')
+    expect(page).to have_field('comment_subject')
+    expect(page).to have_field('comment_body')
+    expect(page).to have_no_field('comment_file')
 
     # Filling in form and submitting
     comment_subject = 'A new comment!'
@@ -22,27 +22,27 @@ describe 'comments' do
 
     # Comment should appear in the comments table
     within '#comments' do
-      page.should have_content(comment_subject)
-      page.should have_content(comment_body)
+      expect(page).to have_content(comment_subject)
+      expect(page).to have_content(comment_body)
     end
     # Form should clear
-    page.should have_field('comment_subject', with: '')
-    page.should have_field('comment_body', with: '')
+    expect(page).to have_field('comment_subject', with: '')
+    expect(page).to have_field('comment_body', with: '')
     # ...and be replaced by link again
-    page.should have_link('Cancel')
+    expect(page).to have_link('Cancel')
   end
 
   it "cancels creating a comment", js: true do
     visit root_path
     click_link 'New Comment'
 
-    page.should have_field('comment_subject')
-    page.should have_link('Cancel')
+    expect(page).to have_field('comment_subject')
+    expect(page).to have_link('Cancel')
     click_link 'Cancel'
 
     # Form should disappear
-    page.should have_no_field('comment_subject')
-    page.should have_link('New Comment')
+    expect(page).to have_no_field('comment_subject')
+    expect(page).to have_link('New Comment')
   end
 
   it "deletes a comment", js: true do
@@ -50,12 +50,12 @@ describe 'comments' do
 
     visit root_path
     within '#comments' do
-      page.should have_content('The Great Yogurt')
+      expect(page).to have_content('The Great Yogurt')
       accept_js_confirm do
         click_link 'Destroy'
       end
 
-      page.should have_no_content('The Great Yogurt')
+      expect(page).to have_no_content('The Great Yogurt')
     end
   end
 
@@ -76,15 +76,15 @@ describe 'comments' do
     click_button 'Create Comment'
 
     # Comment should appear in the comments table
-    page.should have_content('aborted: file')
+    expect(page).to have_content('aborted: file')
 
     page.execute_script("$(document).delegate('form', 'ajax:aborted:file', function() { return true; });")
     click_button 'Create Comment'
 
     # Comment should appear in the comments table
     within '.comment' do
-      page.should have_content(comment_subject)
-      page.should have_content(comment_body)
+      expect(page).to have_content(comment_subject)
+      expect(page).to have_content(comment_body)
     end
   end
 
@@ -103,12 +103,12 @@ describe 'comments' do
     fill_in 'comment_body', with: 'there'
     click_button 'Create Comment'
 
-    %w(true disabled).should include(button[:disabled])
-    button.value.should eq "Submitting..."
+    expect(%w(true disabled)).to include(button[:disabled])
+    expect(button.value).to eq "Submitting..."
 
     sleep 1.5
 
-    button[:disabled].should_not be
-    button.value.should eq "Create Comment"
+    expect(button[:disabled]).to_not be
+    expect(button.value).to eq "Create Comment"
   end
 end
