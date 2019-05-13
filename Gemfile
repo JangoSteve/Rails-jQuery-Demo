@@ -10,11 +10,12 @@ gem 'uglifier'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'sqlite3'
+gem 'sqlite3', '~> 1.3.6'
+gem 'responders', '~> 2.0'
 
 gem 'paperclip'
 gem 'jquery-rails', '~> 3.0'
-gem 'remotipart'#, :path => '../remotipart'
+gem 'remotipart', :github => "JangoSteve/remotipart", :branch => "xss-fix"
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -43,6 +44,7 @@ group :development, :test do
   gem 'selenium-webdriver', '~> 2.44.0'
   gem 'capybara'
   gem 'launchy'
+  gem 'puma'
 end
 
 group :test do

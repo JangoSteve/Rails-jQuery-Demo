@@ -55,6 +55,10 @@ class CommentsController < ApplicationController
     @comment = Comment.destroy(params[:id])
   end
 
+  def say
+    render plain: params[:message]
+  end
+
   private
 
   def comment_params

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe 'comments' do
-  it 'creates a new comment', js: true do
+feature 'comments' do
+  scenario'creates a new comment', js: true do
     visit root_path
     click_link 'New Comment'
 
@@ -31,7 +31,7 @@ describe 'comments' do
     page.should have_link('Cancel')
   end
 
-  it "cancels creating a comment", js: true do
+  scenario"cancels creating a comment", js: true do
     visit root_path
     click_link 'New Comment'
 
@@ -44,7 +44,7 @@ describe 'comments' do
     page.should have_link('New Comment')
   end
 
-  it "deletes a comment", js: true do
+  scenario"deletes a comment", js: true do
     Comment.create(subject: 'The Great Yogurt', body: 'The Schwarz is strong with this one.')
     visit root_path
 
@@ -58,7 +58,7 @@ describe 'comments' do
     end
   end
 
-  it "uploads a file", js: true do
+  scenario"uploads a file", js: true do
     visit root_path
     click_link 'New Comment with Attachment'
 
@@ -90,7 +90,7 @@ describe 'comments' do
     end
   end
 
-  it "Disables submit button while submitting", js: true do
+  scenario"Disables submit button while submitting", js: true do
     visit root_path
 
     click_link 'New Comment'
@@ -114,7 +114,7 @@ describe 'comments' do
     button.value.should eq "Create Comment"
   end
 
-  it "triggers ajax:remotipartSubmit event hook", js: true do
+  scenario"triggers ajax:remotipartSubmit event hook", js: true do
     visit root_path
     page.execute_script("$(document).delegate('form', 'ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); });")
 
@@ -128,7 +128,7 @@ describe 'comments' do
     page.should have_content('remotipart!')
   end
 
-  it "allows remotipart submission to be cancelable via event hook", js: true do
+  scenario"allows remotipart submission to be cancelable via event hook", js: true do
     visit root_path
     page.execute_script("$(document).delegate('form', 'ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); return false; });")
 
@@ -149,7 +149,7 @@ describe 'comments' do
     end
   end
 
-  it "allows custom data-type on form", js: true do
+  scenario"allows custom data-type on form", js: true do
     visit root_path
     page.execute_script("$(document).delegate('form', 'ajax:success', function(evt, data, status, xhr) { $('#comments').after(xhr.responseText); });")
 
@@ -168,7 +168,7 @@ describe 'comments' do
     page.should have_content('HTML response')
   end
 
-  it "escapes html response content properly", js: true do
+  scenario"escapes html response content properly", js: true do
     visit root_path
     page.execute_script("$(document).delegate('form', 'ajax:success', function(evt, data, status, xhr) { $('#comments').after(xhr.responseText); });")
 
@@ -188,7 +188,7 @@ describe 'comments' do
     find('input[name="quote"]').value.should eq '"'
   end
 
-  it "returns the correct response status", js: true do
+  scenario"returns the correct response status", js: true do
     visit root_path
 
     click_link 'New Comment with Attachment'
@@ -208,7 +208,7 @@ describe 'comments' do
     page.should have_content "Error status message: Unprocessable Entity"
   end
 
-  it "passes the method as _method parameter (rails convention)", js: true do
+  scenario"passes the method as _method parameter (rails convention)", js: true do
     visit root_path
 
     click_link 'New Comment with Attachment'
@@ -224,7 +224,7 @@ describe 'comments' do
     page.should have_content 'PUT request!'
   end
 
-  it "does not submit via remotipart unless file is present", js: true do
+  scenario"does not submit via remotipart unless file is present", js: true do
     visit root_path
     page.execute_script("$(document).delegate('form', 'ajax:remotipartSubmit', function() { $('#comments').after('remotipart!'); });")
 
@@ -237,7 +237,7 @@ describe 'comments' do
     page.should have_no_content('remotipart!')
   end
 
-  it "fires all the ajax callbacks on the form", js: true do
+  scenario"fires all the ajax callbacks on the form", js: true do
     visit root_path
     click_link 'New Comment with Attachment'
 
@@ -259,7 +259,7 @@ describe 'comments' do
     page.should have_content('complete')
   end
 
-  it "fires the ajax callbacks for json data-type with remotipart", js: true do
+  scenario"fires the ajax callbacks for json data-type with remotipart", js: true do
     visit root_path
     click_link 'New Comment with Attachment'
 
@@ -283,7 +283,7 @@ describe 'comments' do
     page.should have_content('complete')
   end
 
-  it "only fires the beforeSend hook once", js: true do
+  scenario"only fires the beforeSend hook once", js: true do
     visit root_path
     click_link 'New Comment with Attachment'
 
@@ -301,7 +301,7 @@ describe 'comments' do
     page.should have_css("div.ajax", :count => 1)
   end
 
-  it "cleans up after itself when uploading files", js: true do
+  scenario"cleans up after itself when uploading files", js: true do
     visit root_path
     page.execute_script("$(document).delegate('form', 'ajax:remotipartSubmit', function(evt, xhr, data) { if ($(this).data('remotipartSubmitted')) { $('#comments').after('remotipart before!'); } });")
 
@@ -320,7 +320,7 @@ describe 'comments' do
     page.should have_content('no remotipart after!')
   end
 
-  it "only submits via remotipart when a file upload is present", js: true do
+  scenario"only submits via remotipart when a file upload is present", js: true do
     visit root_path
     page.execute_script("$(document).delegate('form', 'ajax:remotipartSubmit', function(evt, xhr, data) { $('#comments').after('<div class=\"remotipart\">remotipart!</div>'); });")
 
@@ -338,7 +338,7 @@ describe 'comments' do
     form = find('form')
 
     # replace form html, in order clear out the file field (couldn't think of a better way)
-    page.execute_script("inputs = $('form').find(':file'); inputs.remove();")
+    page.execute_script("window.inputs = $('form').find(':file'); inputs.remove();")
     fill_in 'comment_subject', with: 'Hi'
     fill_in 'comment_body', with: 'there'
     click_button 'Create Comment'
@@ -347,7 +347,7 @@ describe 'comments' do
     # Needed to force page capybara to wiat for the above requests to finish
     form = find('form')
 
-    page.execute_script("$('form').append(inputs);")
+    page.execute_script("$('form').append(window.inputs);")
     fill_in 'comment_subject', with: 'Hi'
     fill_in 'comment_body', with: 'there'
     attach_file 'comment_attachment', file_path
@@ -356,7 +356,7 @@ describe 'comments' do
     page.should have_css("div.remotipart", :count => 2)
   end
 
-  it "Disables submit button while submitting with remotipart", js: true do
+  scenario"Disables submit button while submitting with remotipart", js: true do
     visit root_path
 
     click_link 'New Comment with Attachment'
@@ -379,7 +379,7 @@ describe 'comments' do
     button.value.should eq "Create Comment"
   end
 
-  it "submits the clicked button with the form like non-file remote form", js: true do
+  scenario"submits the clicked button with the form like non-file remote form", js: true do
     visit root_path
     click_link 'New Comment with Attachment'
 
@@ -393,5 +393,11 @@ describe 'comments' do
     click_button 'Create Comment'
 
     page.should have_content('commit=')
+  end
+
+  scenario "doesn't allow XSS via script injection for text responses", js: true do
+    visit "/say?message=%3C/textarea%3E%3Csvg/onload=alert(domain)%3E&remotipart_submitted=x"
+    page.should have_selector("textarea")
+    find("textarea").value.should eq('</textarea><svg/onload=alert(domain)>')
   end
 end
